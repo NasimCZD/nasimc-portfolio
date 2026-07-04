@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasim Choroumi - Author & Robotics Engineer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons for modern vector glyphs -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        // Custom Tailwind configurations for our specific Aqua-Navy spectrum
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#060B18', // Ultra dark background
+                            900: '#0B1528', // Core dark sections
+                            800: '#14223A', // Card backgrounds
+                            700: '#1E3150', // Borders & Highlights
+                            600: '#2E476F', // De-emphasized text
+                        },
+                        aqua: {
+                            DEFAULT: '#00E5FF', // Pure radiant cyan
+                            hover: '#00B4D8', // Darker interactive state
+                            muted: '#00E5FF33', // Semi-transparent glow
+                        }
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&family=JetBrains+Mono:wght=400;500;700&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060B18;
+            color: #E2E8F0;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Beautiful glow effect for techno-futuristic elements */
+        .aqua-glow {
+            box-shadow: 0 0 25px -5px rgba(0, 229, 255, 0.4);
+        }
+        
+        .aqua-border-glow {
+            box-shadow: 0 0 15px -3px rgba(0, 229, 255, 0.15);
+        }
+
+        /* Scrollbar aesthetics matching the palette */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E3150;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2E476F;
+        }
+
+        /* Fluid transitions */
+        .smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden">
+
+    <div class="h-full flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Interactive Control and Code Export Sidebar -->
+        <aside class="w-full md:w-[380px] bg-navy-900 border-b md:border-b-0 md:border-r border-navy-700 flex flex-col shrink-0 overflow-y-auto">
+            <div class="p-6 border-b border-navy-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-aqua/10 flex items-center justify-center text-aqua">
+                        <i class="ph-bold ph-sketch-tool text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white text-base">Page Configurator</h2>
+                        <p class="text-xs text-slate-400">Customize & Export Landing Code</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-6 flex-1">
+                <!-- Tab Controls -->
+                <div>
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Workspace Mode</span>
+                    <div class="grid grid-cols-2 gap-1 p-1 bg-navy-950 rounded-lg border border-navy-700">
+                        <button onclick="switchMode('preview')" id="btn-preview" class="py-2 text-xs font-semibold rounded-md smooth bg-navy-800 text-aqua aqua-border-glow">
+                            Live Preview
+                        </button>
+                        <button onclick="switchMode('code')" id="btn-code" class="py-2 text-xs font-semibold rounded-md smooth text-slate-400 hover:text-white">
+                            Source Code
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Parameters Adjuster -->
+                <div class="space-y-4">
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Author Personalization</span>
+                    
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Author Name</label>
+                        <input type="text" id="input-author-name" value="Nasim Choroumi" oninput="updateAuthorInfo()"
+                               class="w-full px-3 py-2 text-sm bg-navy-950 border border-navy-700 rounded-lg text-white focus:outline-none focus:border-aqua smooth">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Amazon Book URL</label>
+                        <input type="text" id="input-book-url" value="https://www.amazon.ca/gp/aw/d/B0H3M6R35V/ref=tmm_kin_swatch_0" oninput="updateAuthorInfo()"
+                               class="w-full px-3 py-2 text-sm bg-navy-950 border border-navy-700 rounded-lg text-white focus:outline-none focus:border-aqua smooth">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Aqua Accent Hue</label>
+                        <select id="select-aqua-accent" onchange="changeAccentColor()"
+                                class="w-full px-3 py-2 text-sm bg-navy-950 border border-navy-700 rounded-lg text-white focus:outline-none focus:border-aqua smooth">
+                            <option value="#00E5FF">Cyber Aqua (#00E5FF)</option>
+                            <option value="#3A86FF">Electric Blue (#3A86FF)</option>
+                            <option value="#06D6A0">Emerald Mint (#06D6A0)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Copy Code Module -->
+                <div class="pt-4 border-t border-navy-700">
+                    <button onclick="copyRawCode()" class="w-full py-3 bg-aqua hover:bg-aqua-hover text-navy-950 font-bold rounded-lg text-sm flex items-center justify-center gap-2 smooth active:scale-[0.98]">
+                        <i class="ph-bold ph-copy"></i>
+                        Copy Full Web Code
+                    </button>
+                    <p class="text-[11px] text-center text-slate-400 mt-2">Ready to drop into a standard <strong>index.html</strong> file!</p>
+                </div>
+            </div>
+
+            <!-- Status Banner -->
+            <div class="p-4 bg-navy-950 border-t border-navy-700 flex items-center justify-between text-xs text-slate-400 mt-auto">
+                <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    SEO & Kindle Optimized
+                </span>
+                <span>v2.4</span>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            
+            <!-- Live Preview Viewport -->
+            <div id="preview-viewport" class="flex-1 overflow-y-auto overflow-x-hidden bg-navy-950 relative">
+                
+                <!-- Web Page Navigation -->
+                <header class="w-full py-4 px-6 md:px-12 border-b border-navy-700/60 bg-navy-950/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded bg-gradient-to-tr from-aqua to-blue-600 flex items-center justify-center text-navy-950 font-extrabold text-sm">
+                            N
+                        </div>
+                        <span class="font-extrabold text-white text-base tracking-wide branding-name">Nasim Choroumi</span>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                        <a href="#featured-book" class="hover:text-aqua transition-colors">Our Books</a>
+                        <a href="#about-author" class="hover:text-aqua transition-colors">Biography</a>
+                        <a href="#upcoming-books" class="hover:text-aqua transition-colors">Upcoming Projects</a>
+                        <a href="#newsletter" class="hover:text-aqua transition-colors">Stay Updated</a>
+                    </nav>
+                    <div>
+                        <a href="https://www.amazon.ca/gp/aw/d/B0H3M6R35V/ref=tmm_kin_swatch_0" target="_blank" class="buy-link-btn px-4 py-2 text-xs font-bold bg-aqua hover:bg-aqua-hover text-navy-950 rounded-lg smooth">
+                            Buy Book
+                        </a>
+                    </div>
+                </header>
+
+                <!-- Featured Book Hero Section -->
+                <section id="featured-book" class="py-16 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
+                    <!-- Neon ambient backgrounds -->
+                    <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-aqua/5 blur-[80px] pointer-events-none"></div>
+                    <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-blue-600/5 blur-[120px] pointer-events-none"></div>
+
+                    <!-- Hero Content left side -->
+                    <div class="lg:col-span-7 space-y-6 relative z-10 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-aqua/10 text-aqua border border-aqua/20 rounded-full text-xs font-semibold uppercase tracking-wider mono">
+                            <i class="ph-bold ph-sparkle"></i> AVAILABLE NOW ON AMAZON
+                        </div>
+                        <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
+                            How to Build a Line Follower Robot <span class="text-transparent bg-clip-text bg-gradient-to-r from-aqua to-blue-400">Using Barcodes</span>
+                        </h1>
+                        <p class="text-base md:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            The definitive physical computing manual. Master low-overhead barcode-based localization systems, layout structures, and line-following hardware design step-by-step.
+                        </p>
+                        
+                        <div class="flex flex-wrap items-center gap-4 justify-center lg:justify-start pt-2">
+                            <span class="px-3 py-1 bg-navy-800 border border-navy-700 rounded text-xs text-slate-300">🤖 Hardware: 8051 Microcontroller</span>
+                            <span class="px-3 py-1 bg-navy-800 border border-navy-700 rounded text-xs text-slate-300">📊 Barcode Path Mapping</span>
+                            <span class="px-3 py-1 bg-navy-800 border border-navy-700 rounded text-xs text-slate-300">⚡ Embedded Logic</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-6">
+                            <a href="https://www.amazon.ca/gp/aw/d/B0H3M6R35V/ref=tmm_kin_swatch_0" target="_blank" class="buy-link-btn w-full sm:w-auto px-8 py-4 bg-aqua hover:bg-aqua-hover text-navy-950 font-extrabold text-base rounded-lg shadow-lg shadow-aqua/10 hover:shadow-aqua/20 smooth active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph-bold ph-shopping-cart text-lg"></i> Buy on Amazon (Hardcover/Paperback/Kindle)
+                            </a>
+                            <a href="#newsletter" class="w-full sm:w-auto px-8 py-4 bg-navy-800 hover:bg-navy-700 text-slate-100 font-bold text-base rounded-lg border border-navy-700 smooth flex items-center justify-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                Free with Kindle Unlimited
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Book Cover Visual Representation -->
+                    <div class="lg:col-span-5 flex flex-col justify-center items-center relative z-10">
+                        <div class="w-[300px] h-[450px] relative group smooth" style="perspective: 1000px;">
+                            <!-- Accent Ambient Glow -->
+                            <div class="absolute -inset-2.5 bg-gradient-to-r from-aqua to-blue-600 rounded-xl blur-2xl opacity-40 group-hover:opacity-60 smooth transition duration-500"></div>
+                            
+                            <!-- Static Depth Book Graphic Frame -->
+                            <div class="w-full h-full bg-gradient-to-b from-navy-900 to-navy-950 rounded-xl border border-navy-700/80 overflow-hidden relative shadow-2xl flex flex-col justify-between smooth group-hover:scale-[1.02] group-hover:shadow-aqua/15 duration-500">
+                                <img src="C:\Users\nasim\Documents\2026\Book\nasim-portfolio\images\FrontCover.jpg" 
+                                     alt="How to Build a Line Follower Robot Using Barcodes Cover" 
+                                     class="w-full h-full object-cover rounded-xl"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/300x450/0b1528/00E5FF?text=FrontCover.jpg'">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Innovation Grid -->
+                <section class="py-16 px-6 md:px-12 max-w-7xl mx-auto border-t border-navy-800">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Why Barcode-Based Navigation?</h2>
+                        <p class="text-sm text-slate-400 mt-2">Discover the smart interface of sustainable mechanics and low-overhead artificial logic systems.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Feature 1 -->
+                        <div class="bg-navy-900 border border-navy-700 p-6 rounded-xl hover:border-aqua/50 smooth">
+                            <div class="w-10 h-10 rounded-lg bg-aqua/10 flex items-center justify-center text-aqua mb-4">
+                                <i class="ph-bold ph-barcode text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2">Barcode Navigation</h3>
+                            <p class="text-sm text-slate-400">Deploy high-accuracy coordinate and mission targeting algorithms utilizing inexpensive and reusable barcode arrays instead of costly optical components.</p>
+                        </div>
+                        <!-- Feature 2 -->
+                        <div class="bg-navy-900 border border-navy-700 p-6 rounded-xl hover:border-aqua/50 smooth">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4">
+                                <i class="ph-bold ph-cpu text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2">Adaptive Control</h3>
+                            <p class="text-sm text-slate-400">Learn how to configure basic hardware drivers, sensor alignments, and PID movement formulas to turn a raw build into a smooth navigator.</p>
+                        </div>
+                        <!-- Feature 3 -->
+                        <div class="bg-navy-900 border border-navy-700 p-6 rounded-xl hover:border-aqua/50 smooth">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4">
+                                <i class="ph-bold ph-leaf text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2">Sustainable Architecture</h3>
+                            <p class="text-sm text-slate-400">Crafting robust code bases and minimizing sensor bloat is the first step toward smart, clean, and sustainable system architectures.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Author Biography Section -->
+                <section id="about-author" class="py-20 px-6 md:px-12 bg-navy-900 relative">
+                    <div class="absolute inset-0 bg-gradient-to-b from-navy-950/20 via-navy-900 to-navy-950/20 pointer-events-none"></div>
+                    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center relative z-10">
+                        
+                        <!-- Profile picture left -->
+                        <div class="md:col-span-4 flex justify-center">
+                            <div class="relative w-52 h-52 group">
+                                <!-- Neon accent circles -->
+                                <div class="absolute -inset-1.5 bg-gradient-to-r from-aqua to-blue-600 rounded-full blur opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                                <!-- Author headshot container -->
+                                <div class="relative w-full h-full bg-navy-950 rounded-full border-2 border-navy-700 overflow-hidden flex items-center justify-center">
+                                    <img src="C:\Users\nasim\Documents\2026\Book\nasim-portfolio\images\NasimVI.png" alt="Nasim Choroumi" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/400x400/0b1528/00E5FF?text=Nasim+Choroumi'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bio Content right -->
+                        <div class="md:col-span-8 space-y-4 text-center md:text-left">
+                            <span class="text-xs uppercase tracking-widest font-bold text-aqua mono">Meet the Author</span>
+                            <h2 class="text-3xl font-extrabold text-white branding-name">Nasim Choroumi</h2>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Nasim Choroumi is a seasoned Technical Program Manager with a decade of experience leading complex, cross-functional initiatives across technology, cybersecurity, and product development. With a Bachelor in Computing and Information Systems from Goldsmiths College, University of London, and a Master of Science in Project Management from Boston University, she brings a unique fusion of hands-on engineering knowledge, systems thinking, and a passion for emerging technologies. As an educator and Mentor, Nasim has taught project management at college level and guided early career professionals through the challenges of learning and leading in technical fields. She believes that the best way to understand technology is to build it - experimenting, troubleshooting, and learning through real-world experience.
+                            </p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                <em>How to Build a Line Follower Robot Using Barcodes</em> grew out of Nasim's own early experiments in circuit design, microcontroller programming, and robotics. In her publications, she blends technical instructions with stories of persistence and discovery, aiming to inspire the next generation of builders, thinkers, and innovators.
+                            </p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Her upcoming research targets the convergence of edge computing and ecological responsibility—demonstrating that tomorrow's smartest autonomous agents do not require expensive equipment or massive carbon footprints.
+                            </p>
+                            <div class="flex items-center gap-4 justify-center md:justify-start pt-2">
+                                <div class="flex flex-col">
+                                    <span class="text-xl font-extrabold text-white">10+</span>
+                                    <span class="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Years Experience</span>
+                                </div>
+                                <div class="w-px h-8 bg-navy-700"></div>
+                                <div class="flex flex-col">
+                                    <span class="text-xl font-extrabold text-white">15+</span>
+                                    <span class="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Technical Deployments</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Upcoming Books Showcase -->
+                <section id="upcoming-books" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+                    <div class="text-center max-w-2xl mx-auto mb-16">
+                        <span class="text-xs uppercase tracking-widest font-bold text-aqua mono">Future Releases</span>
+                        <h2 class="text-3xl font-extrabold text-white mt-1">Upcoming Literary Projects</h2>
+                        <p class="text-sm text-slate-400 mt-2">Get an exclusive first look at future titles exploring sustainable computing, Magicbit kits, and modern physical interfaces.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+                        <!-- Upcoming Book Card (Magicbit Edition - Front Page 4 Image Showcase) -->
+                        <div class="bg-navy-900 border border-navy-700 rounded-xl p-8 flex flex-col md:flex-row gap-8 relative overflow-hidden group hover:border-aqua/40 smooth">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-aqua/5 blur-2xl pointer-events-none"></div>
+                            
+                            <!-- Front Page 4 Image Component -->
+                            <div class="w-[180px] h-[256px] rounded-lg border border-navy-600/80 overflow-hidden shrink-0 self-center md:self-auto shadow-2xl relative group-hover:scale-[1.03] smooth duration-500 bg-[#0B1220]">
+                                <img src="C:\Users\nasim\Documents\2026\Book\nasim-portfolio\images\FrontPage4.png" 
+                                     alt="Intelligent Line Follower Robot Using Magicbit Cover" 
+                                     class="w-full h-full object-cover rounded-lg"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/180x256/0b1220/00E5FF?text=Front+Page+4'">
+                            </div>
+
+                            <div class="flex-grow flex flex-col justify-between space-y-4">
+                                <div class="space-y-2">
+                                    <span class="px-2 py-0.5 bg-aqua/10 text-aqua border border-aqua/20 rounded text-[10px] font-bold uppercase tracking-wider mono">Featuring Magicbit • Upcoming Release</span>
+                                    <h3 class="text-xl font-extrabold text-white">Intelligent Line Follower Robot Using Magicbit: From Basic to IoT and AI Control and Sustainability</h3>
+                                    <p class="text-sm text-slate-400">Step into the future of integrated systems. This highly-anticipated follow-up book demonstrates how to deploy responsive edge AI models and green-engineering architecture specifically on the versatile Magicbit platform.</p>
+                                </div>
+                                <div class="pt-2">
+                                    <a href="#newsletter" class="inline-flex items-center gap-1.5 text-sm font-bold text-aqua hover:text-white smooth">
+                                        Notify me on release <i class="ph-bold ph-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Newsletter Signup Form -->
+                <section id="newsletter" class="py-16 px-6 md:px-12 bg-navy-900 border-t border-navy-800 relative">
+                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[150px] bg-aqua/5 blur-[100px] pointer-events-none"></div>
+                    <div class="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+                        <i class="ph-bold ph-envelope-open text-4xl text-aqua"></i>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Join the Smart Inventor's Club</h2>
+                        <p class="text-sm text-slate-300 max-w-xl mx-auto">Receive chapters, premium robotics code, sustainable engineering updates, and launch discounts directly to your inbox.</p>
+                        
+                        <form id="newsletter-form" onsubmit="handleSubscribe(event)" class="max-w-md mx-auto flex flex-col sm:flex-row gap-2 pt-2">
+                            <input type="email" required placeholder="Enter your email"
+                                   class="flex-grow px-4 py-3 text-sm bg-navy-950 border border-navy-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-aqua smooth">
+                            <button type="submit" class="px-6 py-3 bg-aqua hover:bg-aqua-hover text-navy-950 font-bold rounded-lg text-sm smooth flex items-center justify-center gap-2 active:scale-[0.98]">
+                                Subscribe <i class="ph-bold ph-paper-plane-right"></i>
+                            </button>
+                        </form>
+                        <div id="newsletter-success" class="hidden text-xs text-emerald-400 font-semibold flex items-center justify-center gap-2 mt-3">
+                            <i class="ph-bold ph-check-circle text-base"></i> Awesome! Check your inbox for upcoming releases.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="py-8 text-center text-xs text-slate-500 border-t border-navy-850 bg-navy-950">
+                    <p>&copy; <span id="current-year">2026</span> <span class="branding-name">Nasim Choroumi</span>. Dedicated to Sustainable Engineering & STEM Education.</p>
+                </footer>
+
+            </div>
+
+            <!-- Source Code Exporter view pane -->
+            <div id="code-viewport" class="absolute inset-0 bg-[#070b13] z-40 hidden flex flex-col overflow-hidden">
+                <div class="p-4 bg-navy-950 border-b border-navy-700 flex justify-between items-center shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                        <span class="text-xs font-bold text-slate-300 mono">Raw single-file code template (HTML/CSS)</span>
+                    </div>
+                    <button onclick="copyRawCode()" class="px-3 py-1.5 bg-navy-800 hover:bg-navy-700 text-slate-200 hover:text-white rounded text-xs font-bold smooth flex items-center gap-1">
+                        <i class="ph-bold ph-copy"></i> Copy Code
+                    </button>
+                </div>
+                <div class="flex-1 overflow-auto p-6">
+                    <pre class="mono text-slate-300 text-xs leading-relaxed selection:bg-aqua/30 select-all" id="code-container"></pre>
+                </div>
+            </div>
+
+            <!-- Custom Modern Toast Box -->
+            <div id="custom-toast" class="fixed bottom-6 right-6 px-4 py-3 bg-navy-800 border border-aqua/30 text-white rounded-lg shadow-xl translate-y-20 opacity-0 smooth z-50 flex items-center gap-3">
+                <i class="ph-bold ph-check-circle text-aqua text-xl"></i>
+                <span id="toast-message" class="text-xs font-medium">Text successfully copied!</span>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Set the dynamic footer year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Application State
+        const appState = {
+            activeView: 'preview', // 'preview' or 'code'
+            authorName: 'Nasim Choroumi',
+            bookUrl: 'https://www.amazon.ca/gp/aw/d/B0H3M6R35V/ref=tmm_kin_swatch_0',
+            accentColor: '#00E5FF'
+        };
+
+        // Switch workspace viewing layouts
+        function switchMode(mode) {
+            appState.activeView = mode;
+            
+            const btnPreview = document.getElementById('btn-preview');
+            const btnCode = document.getElementById('btn-code');
+            const previewViewport = document.getElementById('preview-viewport');
+            const codeViewport = document.getElementById('code-viewport');
+
+            if (mode === 'preview') {
+                btnPreview.className = "py-2 text-xs font-semibold rounded-md smooth bg-navy-800 text-aqua aqua-border-glow";
+                btnCode.className = "py-2 text-xs font-semibold rounded-md smooth text-slate-400 hover:text-white";
+                previewViewport.classList.remove('hidden');
+                codeViewport.classList.add('hidden');
+            } else {
+                btnCode.className = "py-2 text-xs font-semibold rounded-md smooth bg-navy-800 text-aqua aqua-border-glow";
+                btnPreview.className = "py-2 text-xs font-semibold rounded-md smooth text-slate-400 hover:text-white";
+                previewViewport.classList.add('hidden');
+                codeViewport.classList.remove('hidden');
+                generateExportCode();
+            }
+        }
+
+        // Live input binders
+        function updateAuthorInfo() {
+            appState.authorName = document.getElementById('input-author-name').value || 'Nasim Choroumi';
+            appState.bookUrl = document.getElementById('input-book-url').value || '#';
+
+            // Bind into preview template dynamic areas
+            document.querySelectorAll('.branding-name').forEach(el => {
+                el.textContent = appState.authorName;
+            });
+
+            document.querySelectorAll('.buy-link-btn').forEach(btn => {
+                btn.setAttribute('href', appState.bookUrl);
+            });
+            
+            // Re-render source code view if active
+            if (appState.activeView === 'code') {
+                generateExportCode();
+            }
+        }
+
+        // Color dynamic update
+        function changeAccentColor() {
+            const selectValue = document.getElementById('select-aqua-accent').value;
+            appState.accentColor = selectValue;
+
+            // Apply style dynamically on preview components
+            document.documentElement.style.setProperty('--aqua', selectValue);
+            
+            // Dynamic text and elements
+            document.querySelectorAll('.text-aqua').forEach(el => {
+                el.style.color = selectValue;
+            });
+            
+            document.querySelectorAll('.bg-aqua').forEach(el => {
+                el.style.backgroundColor = selectValue;
+            });
+
+            if (appState.activeView === 'code') {
+                generateExportCode();
+            }
+        }
+
+        // Handle inline newsletter trigger safely
+        function handleSubscribe(e) {
+            e.preventDefault();
+            const emailInput = e.target.querySelector('input');
+            
+            // Simulating API loading State
+            emailInput.disabled = true;
+            const subBtn = e.target.querySelector('button');
+            subBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Subscribing...';
+
+            setTimeout(() => {
+                emailInput.value = '';
+                emailInput.disabled = false;
+                subBtn.innerHTML = 'Subscribe <i class="ph-bold ph-paper-plane-right"></i>';
+                document.getElementById('newsletter-success').classList.remove('hidden');
+                
+                showNotification("Subscribed Successfully!");
+            }, 1000);
+        }
+
+        // Display beautiful in-app toast
+        function showNotification(message) {
+            const toast = document.getElementById('custom-toast');
+            const msgSpan = document.getElementById('toast-message');
+            msgSpan.textContent = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Safe Code generator builder function
+        function generateExportCode() {
+            const rawTemplate = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Line Follower Robot - By \${appState.authorName}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"><\/script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#060B18',
+                            900: '#0B1528',
+                            800: '#14223A',
+                            700: '#1E3150',
+                            600: '#2E476F',
+                        },
+                        aqua: {
+                            DEFAULT: '\${appState.accentColor}',
+                            hover: '\${appState.accentColor}dd',
+                            muted: '\${appState.accentColor}33',
+                        }
+                    }
+                }
+            }
+        }
+    <\/script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&family=JetBrains+Mono:wght=400;500;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060B18;
+            color: #E2E8F0;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="w-full py-4 px-6 md:px-12 border-b border-navy-700/60 bg-navy-950/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center">
+        <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded bg-gradient-to-tr from-aqua to-blue-600 flex items-center justify-center text-navy-950 font-extrabold text-sm">
+                N
+            </div>
+            <span class="font-extrabold text-white text-base tracking-wide branding-name">\${appState.authorName}</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+            <a href="#featured-book" class="hover:text-aqua transition-colors">Our Books</a>
+            <a href="#about-author" class="hover:text-aqua transition-colors">Biography</a>
+            <a href="#upcoming-books" class="hover:text-aqua transition-colors">Upcoming Projects</a>
+            <a href="#newsletter" class="hover:text-aqua transition-colors">Stay Updated</a>
+        </nav>
+        <div>
+            <a href="\${appState.bookUrl}" target="_blank" class="px-4 py-2 text-xs font-bold bg-aqua hover:bg-aqua-hover text-navy-950 rounded-lg smooth">
+                Buy Book
+            </a>
+        </div>
+    </header>
+
+    <!-- Featured Book Hero Section -->
+    <section id="featured-book" class="py-16 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
+        <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-aqua/5 blur-[80px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-blue-600/5 blur-[120px] pointer-events-none"></div>
+
+        <div class="lg:col-span-7 space-y-6 relative z-10 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-aqua/10 text-aqua border border-aqua/20 rounded-full text-xs font-semibold uppercase tracking-wider mono">
+                <i class="ph-bold ph-sparkle"></i> AVAILABLE NOW ON AMAZON
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
+                How to Build a Line Follower Robot <span class="text-transparent bg-clip-text bg-gradient-to-r from-aqua to-blue-400">Using Barcodes</span>
+            </h1>
+            <p class="text-base md:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                The definitive physical computing manual. Master low-overhead barcode-based localization systems, layout structures, and line-following hardware design step-by-step.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-6">
+                <a href="\${appState.bookUrl}" target="_blank" class="buy-link-btn w-full sm:w-auto px-8 py-4 bg-aqua hover:bg-aqua-hover text-navy-950 font-extrabold text-base rounded-lg shadow-lg shadow-aqua/10 hover:shadow-aqua/20 smooth active:scale-95 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-shopping-cart text-lg"></i> Buy on Amazon
+                </a>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col justify-center items-center relative z-10">
+            <div class="w-[300px] h-[450px] relative group smooth" style="perspective: 1000px;">
+                <div class="absolute -inset-2.5 bg-gradient-to-r from-aqua to-blue-600 rounded-xl blur-2xl opacity-40 smooth"></div>
+                <div class="w-full h-full bg-gradient-to-b from-navy-900 to-navy-950 rounded-xl border border-navy-700/80 overflow-hidden relative shadow-2xl flex flex-col justify-between smooth">
+                    <img src="C:\Users\nasim\Documents\2026\Book\nasim-portfolio\images\FrontCover.jpg" alt="Book Cover" class="w-full h-full object-cover rounded-xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-center text-xs text-slate-500 border-t border-navy-850 bg-navy-950 mt-auto">
+        <p>&copy; 2026 \${appState.authorName}. Dedicated to Sustainable Engineering & STEM Education.</p>
+    </footer>
+
+</body>
+</html>`;
+
+            document.getElementById('code-container').textContent = rawTemplate;
+        }
+
+        // Dedicated cross-browser clean clip action (iframe compatible)
+        function copyRawCode() {
+            generateExportCode();
+            const codeContent = document.getElementById('code-container').textContent;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = codeContent;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification("Full code copied to clipboard!");
+                } else {
+                    showNotification("Copy failed. Please manually select the code.");
+                }
+            } catch (err) {
+                showNotification("Copy failed. Please copy raw source manually.");
+            }
+
+            document.body.removeChild(tempInput);
+        }
+    </script>
+
+</body>
+</html>
